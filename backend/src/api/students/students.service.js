@@ -47,3 +47,22 @@ export async function handleAddStudent(studentData) {
     };
   }
 }
+
+export async function handleGetStudentsByGrade(grade) {
+  try {
+    const studentsCollection = (await db()).collection('students');
+    const students = await studentsCollection.find({ grade }).toArray();
+    if (!students.length) {
+      throw {
+        statusCode: 404,
+        message: 'No students found for the specified grade',
+      };
+    }
+    return students;
+  } catch (error) {
+    throw {
+      statusCode: 500,
+      message: `Database error: ${error.message}`,
+    };
+  }
+}
