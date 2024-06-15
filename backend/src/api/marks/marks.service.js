@@ -5,7 +5,13 @@ export async function handleAddMarks(marksData) {
     !marksData.roll_no ||
     typeof marksData.numeric !== 'number' ||
     typeof marksData.read_write !== 'number' ||
-    typeof marksData.emotional !== 'number'
+    !marksData.socio_emo_marks ||
+    typeof marksData.socio_emo_marks.self_awareness !== 'number' ||
+    typeof marksData.socio_emo_marks.confidence !== 'number' ||
+    typeof marksData.socio_emo_marks.hygiene !== 'number' ||
+    typeof marksData.socio_emo_marks.relationship_behavior !== 'number' ||
+    typeof marksData.socio_emo_marks.social_awareness !== 'number' ||
+    typeof marksData.socio_emo_marks.ownership !== 'number'
   ) {
     throw {
       statusCode: 400,
@@ -15,42 +21,21 @@ export async function handleAddMarks(marksData) {
 
   try {
     const studentsCollection = (await db()).collection('marks');
-    const totalMarks = marksData.numeric + marksData.read_write + marksData.emotional;
-    const student = await studentsCollection.findOne({ roll_no: marksData.roll_no });
-
-    if (student) {
-      if (!Array.isArray(student.arithmetic_marks)) {
-        await studentsCollection.updateOne(
-          { roll_no: marksData.roll_no },
-          { $set: { arithmetic_marks: student.arithmetic_marks ? [student.arithmetic_marks] : [] } },
-        );
-      }
-      if (!Array.isArray(student.read_write_marks)) {
-        await studentsCollection.updateOne(
-          { roll_no: marksData.roll_no },
-          { $set: { read_write_marks: student.read_write_marks ? [student.read_write_marks] : [] } },
-        );
-      }
-      if (!Array.isArray(student.socio_emo_marks)) {
-        await studentsCollection.updateOne(
-          { roll_no: marksData.roll_no },
-          { $set: { socio_emo_marks: student.socio_emo_marks ? [student.socio_emo_marks] : [] } },
-        );
-      }
-      if (!Array.isArray(student.total_marks)) {
-        await studentsCollection.updateOne(
-          { roll_no: marksData.roll_no },
-          { $set: { total_marks: student.total_marks ? [student.total_marks] : [] } },
-        );
-      }
-    }
+    const socioEmoMarks = marksData.socio_emo_marks;
+    const totalSocioEmoMarks = Object.values(socioEmoMarks).reduce((acc, val) => acc + val, 0);
+    const totalMarks = marksData.numeric + marksData.read_write + totalSocioEmoMarks;
     const result = await studentsCollection.updateOne(
       { roll_no: marksData.roll_no },
       {
         $push: {
           arithmetic_marks: marksData.numeric,
           read_write_marks: marksData.read_write,
-          socio_emo_marks: marksData.emotional,
+          'socio_emo_marks.self_awareness': socioEmoMarks.self_awareness,
+          'socio_emo_marks.confidence': socioEmoMarks.confidence,
+          'socio_emo_marks.hygiene': socioEmoMarks.hygiene,
+          'socio_emo_marks.relationship_behavior': socioEmoMarks.relationship_behavior,
+          'socio_emo_marks.social_awareness': socioEmoMarks.social_awareness,
+          'socio_emo_marks.ownership': socioEmoMarks.ownership,
           total_marks: totalMarks,
         },
       },
