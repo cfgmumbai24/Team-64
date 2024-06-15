@@ -1,21 +1,19 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-
+import React from 'react';
+import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/Navbar";
-import Carousal from "./components/Carousal";
 import Footer from "./components/Footer";
+import { Outlet } from "react-router-dom";
 
 function App() {
-
   return (
     <>
-      <Navbar></Navbar>
-      <Carousal></Carousal>
-      <Footer></Footer>
+      <Navbar />
+      <div className="container my-5">
+        <Outlet />
+      </div>
+      <Footer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
