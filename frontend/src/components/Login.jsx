@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-  const [userID, setUserID] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleUserIDChange = (event) => {
-    setUserID(event.target.value);
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
@@ -15,80 +15,94 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add your login logic here
-    // For example, you can check if the userID and password are correct
-    // If correct, navigate to a different page, otherwise show an error message
-    console.log("User ID:", userID);
-    console.log("Password:", password);
-    navigate("/dashboard"); // Redirect to a different page after successful login
+    try {
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email, password: password })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Login successful:", result);
+        navigate("/dashboard"); // Redirect to the dashboard after successful login
+      } else {
+        const error = await response.json();
+        console.error("Error:", error.message);
+        alert("Login failed: " + error.message); // Show an error message
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An unexpected error occurred"); // Show an error message
+    }
   };
 
   return (
-    <>
-      <div className="container">
-        <div className="row justify-content-center align-items-center vh-100">
-          <div className="col-md-1 text-center company__info" style={{ backgroundColor: "white" }}>
-            <img
-              src="/img/gramurja_logo.png"
-              width="70"
-              height="70"
-              className="d-inline-block align-top mr-2"
-              alt="Preamble"
-            />
-          </div>
-          <div className="col-md-8 col-xs-12 col-sm-12 my-4 login_form">
-            <div className="container-fluid my-4 ">
-              <div className="row">
-                <h2>Login</h2>
-              </div>
-              <div className="row my-4">
-                <form onSubmit={handleSubmit} className="form-group">
-                  <div className="row">
-                    <input
-                      type="text"
-                      name="userID"
-                      id="userID"
-                      className="form__input my-4"
-                      placeholder="User ID"
-                      value={userID}
-                      onChange={handleUserIDChange}
-                      required
-                    />
-                  </div>
-                  <div className="row">
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      className="form__input my-4"
-                      placeholder="Password"
-                      value={password}
-                      onChange={handlePasswordChange}
-                      required
-                    />
-                  </div>
-
-                  <div className="row bg-primary">
-                    <input
-                      type="submit"
-                      value="Login"
-                      className="btnLogin bg-success"
-                    />
-                  </div>
-                </form>
-                <div className="row my-3">
-                  <p>
-                    Don't have an account? <Link to="/register">Sign Up</Link>
-                  </p>
+    <div className="container">
+      <div className="row justify-content-center align-items-center vh-100">
+        <div className="col-md-1 text-center company__info" style={{ backgroundColor: "white" }}>
+          <img
+            src="/img/gramurja_logo.png"
+            width="70"
+            height="70"
+            className="d-inline-block align-top mr-2"
+            alt="Preamble"
+          />
+        </div>
+        <div className="col-md-8 col-xs-12 col-sm-12 my-4 login_form">
+          <div className="container-fluid my-4">
+            <div className="row">
+              <h2>Login</h2>
+            </div>
+            <div className="row my-4">
+              <form onSubmit={handleSubmit} className="form-group">
+                <div className="row">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="form__input my-4"
+                    placeholder="Email ID"
+                    value={email}
+                    onChange={handleEmailChange}
+                    required
+                  />
                 </div>
+                <div className="row">
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    className="form__input my-4"
+                    placeholder="Password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                </div>
+
+                <div className="row bg-primary">
+                  <input
+                    type="submit"
+                    value="Login"
+                    className="btnLogin bg-success"
+                  />
+                </div>
+              </form>
+              <div className="row my-3">
+                <p>
+                  Don't have an account? <Link to="/register">Sign Up</Link>
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
