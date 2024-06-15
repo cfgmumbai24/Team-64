@@ -37,7 +37,7 @@ export async function getMarksByRollNo(req, res, next) {
     console.error('Error fetching marks:', error);
     res.status(error.statusCode || 500).json({
       success: false,
-      message: error.message || 'An unexpected error occurred while fetching marks.',
+      message: error.message,
     });
     next(error);
   }
