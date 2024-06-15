@@ -5,7 +5,13 @@ export async function handleAddMarks(marksData) {
     !marksData.roll_no ||
     typeof marksData.numeric !== 'number' ||
     typeof marksData.read_write !== 'number' ||
-    typeof marksData.emotional !== 'number'
+    !marksData.socio_emo_marks ||
+    typeof marksData.socio_emo_marks.self_awareness !== 'number' ||
+    typeof marksData.socio_emo_marks.confidence !== 'number' ||
+    typeof marksData.socio_emo_marks.hygiene !== 'number' ||
+    typeof marksData.socio_emo_marks.relationship_behavior !== 'number' ||
+    typeof marksData.socio_emo_marks.social_awareness !== 'number' ||
+    typeof marksData.socio_emo_marks.ownership !== 'number'
   ) {
     throw {
       statusCode: 400,
@@ -14,20 +20,37 @@ export async function handleAddMarks(marksData) {
   }
 
   try {
-    const marksCollection = (await db()).collection('marks');
+    const studentsCollection = (await db()).collection('marks');
+    const socioEmoMarks = marksData.socio_emo_marks;
+    const totalSocioEmoMarks = Object.values(socioEmoMarks).reduce((acc, val) => acc + val, 0);
+    const totalMarks = marksData.numeric + marksData.read_write + totalSocioEmoMarks;
+    const result = await studentsCollection.updateOne(
+      { roll_no: marksData.roll_no },
+      {
+        $push: {
+          arithmetic_marks: marksData.numeric,
+          read_write_marks: marksData.read_write,
+          'socio_emo_marks.self_awareness': socioEmoMarks.self_awareness,
+          'socio_emo_marks.confidence': socioEmoMarks.confidence,
+          'socio_emo_marks.hygiene': socioEmoMarks.hygiene,
+          'socio_emo_marks.relationship_behavior': socioEmoMarks.relationship_behavior,
+          'socio_emo_marks.social_awareness': socioEmoMarks.social_awareness,
+          'socio_emo_marks.ownership': socioEmoMarks.ownership,
+          total_marks: totalMarks,
+        },
+      },
+      { upsert: true },
+    );
 
-    // Calculate total marks
-    marksData.total = marksData.numeric + marksData.read_write + marksData.emotional;
-
-    const result = await marksCollection.insertOne(marksData);
-    if (!result.insertedId) {
+    if (result.modifiedCount === 0 && result.upsertedCount === 0) {
       throw new Error('Failed to add marks');
     }
 
     return {
       statusCode: 201,
       message: 'Marks added successfully',
-      marksId: result.insertedId,
+      modifiedCount: result.modifiedCount,
+      upsertedId: result.upsertedId ? result.upsertedId._id : null,
     };
   } catch (error) {
     throw {
@@ -39,11 +62,9 @@ export async function handleAddMarks(marksData) {
 
 export async function handleGetMarksByRollNo(rollNo) {
   try {
-    const marksCollection = (await db()).collection('marks');
-
-    // Find the marks with the provided roll_no
-    const marks = await marksCollection.findOne({ roll_no: rollNo });
-    if (!marks) {
+    const studentsCollection = (await db()).collection('marks');
+    const student = await studentsCollection.findOne({ roll_no: rollNo });
+    if (!student) {
       throw {
         statusCode: 404,
         message: 'Marks not found for the given roll number',
@@ -53,7 +74,12 @@ export async function handleGetMarksByRollNo(rollNo) {
     return {
       statusCode: 200,
       message: 'Marks fetched successfully',
-      marks,
+      marks: {
+        arithmetic_marks: student.arithmetic_marks || [],
+        read_write_marks: student.read_write_marks || [],
+        socio_emo_marks: student.socio_emo_marks || [],
+        total_marks: student.total_marks || [],
+      },
     };
   } catch (error) {
     throw {
