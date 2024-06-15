@@ -1,26 +1,21 @@
-import React from 'react';
-import "bootstrap/dist/css/bootstrap.min.css";
+// import { useState } from 'react'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
+// import './App.css'
+
 import Navbar from "./components/Navbar";
+import Carousal from "./components/Carousal";
 import Footer from "./components/Footer";
-import About from "./components/About";
-import GoatFellow from "./components/GoatFellowForm"
-import ClassCards from "./components/ClassCards";
-import AttendanceTable from "./components/AttendanceTable";
-import AttendanceEvaluation from "./components/AttendanceEvaluation";
-import EvaluationTable from "./components/EvaluationTable";
-import { Outlet } from "react-router-dom";
 
 function App() {
+
   return (
     <>
-
-      <Navbar />
-      <div className="container my-5">
-        <Outlet />
-      </div>
-      <Footer />
+      <Navbar></Navbar>
+      <Carousal></Carousal>
+      <Footer></Footer>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

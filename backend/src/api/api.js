@@ -6,6 +6,5 @@ export default () => {
   const app = Router();
   app.use('/students', studentRouter());
   app.use('/attendance', attendanceRouter());
-
   return app;
 };
