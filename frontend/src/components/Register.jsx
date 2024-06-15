@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [userID, setUserID] = useState("");
   const [password, setPassword] = useState("");
   const [profile, setProfile] = useState(0);
 
@@ -14,10 +13,6 @@ const Register = () => {
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
-  };
-
-  const handleUserIDChange = (event) => {
-    setUserID(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
@@ -98,22 +93,10 @@ const Register = () => {
                 </div>
                 <div className="row">
                   <input
-                    type="text"
-                    name="userID"
-                    id="userID"
-                    className="form__input my-4 "
-                    placeholder="User ID"
-                    value={userID}
-                    onChange={handleUserIDChange}
-                    required
-                  />
-                </div>
-                <div className="row">
-                  <input
                     type="password"
                     name="password"
                     id="password"
-                    className="form__input"
+                    className="form__input my-4"
                     placeholder="Password"
                     value={password}
                     onChange={handlePasswordChange}
