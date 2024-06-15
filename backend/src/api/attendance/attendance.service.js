@@ -1,5 +1,92 @@
 import db from '../../loaders/database.js';
 
+export async function handleGetAttendanceByClass(classno) {
+  try {
+    const studentsCollection = (await db()).collection('students');
+    const attendanceCollection = (await db()).collection('attendance');
+    const students = await studentsCollection.find({ std: classno }).toArray();
+    if (students.length === 0) {
+      throw {
+        statusCode: 404,
+        message: `No students found for class ${classno}`,
+      };
+    }
+    const studentIds = students.map(student => student._id);
+    const attendanceRecords = await attendanceCollection.find({ stud_id: { $in: studentIds } }).toArray();
+    if (attendanceRecords.length === 0) {
+      throw {
+        statusCode: 404,
+        message: `No attendance records found for class ${classno}`,
+      };
+    }
+    return attendanceRecords;
+  } catch (error) {
+    console.error('Error in handleGetAttendanceByClass:', error);
+    throw {
+      statusCode: error.statusCode || 500,
+      message: error.message || 'An unexpected error occurred while fetching attendance.',
+    };
+  }
+}
+
+export async function handleGetAttendanceByGrade(grade) {
+  try {
+    const studentsCollection = (await db()).collection('students');
+    const attendanceCollection = (await db()).collection('attendance');
+    const students = await studentsCollection.find({ grade: grade }).toArray();
+    if (students.length === 0) {
+      throw {
+        statusCode: 404,
+        message: `No students found for class ${grade}`,
+      };
+    }
+    const studentIds = students.map(student => student._id);
+    const attendanceRecords = await attendanceCollection.find({ stud_id: { $in: studentIds } }).toArray();
+    if (attendanceRecords.length === 0) {
+      throw {
+        statusCode: 404,
+        message: `No attendance records found for grade ${grade}`,
+      };
+    }
+    return attendanceRecords;
+  } catch (error) {
+    console.error('Error in handleGetAttendanceByGrade:', error);
+    throw {
+      statusCode: error.statusCode || 500,
+      message: error.message || 'An unexpected error occurred while fetching attendance.',
+    };
+  }
+}
+
+export async function handleGetAttendanceByStudent(rollNo) {
+  try {
+    const studentsCollection = (await db()).collection('students');
+    const attendanceCollection = (await db()).collection('attendance');
+    const students = await studentsCollection.find({ roll_no: rollNo }).toArray();
+    if (students.length === 0) {
+      throw {
+        statusCode: 404,
+        message: `No student with ${rollNo} found`,
+      };
+    }
+    const studentIds = students.map(student => student._id);
+    const attendanceRecords = await attendanceCollection.find({ stud_id: { $in: studentIds } }).toArray();
+    if (attendanceRecords.length === 0) {
+      throw {
+        statusCode: 404,
+        message: `No attendance records found for rollNo ${rollNo}`,
+      };
+    }
+    return attendanceRecords;
+  } catch (error) {
+    console.error('Error in handleGetAttendanceByStudent:', error);
+    throw {
+      statusCode: error.statusCode || 500,
+      message: error.message || 'An unexpected error occurred while fetching attendance.',
+    };
+  }
+}
+
 export async function handleUpdateAttendance(classno, attendanceData) {
   const { date, attendance } = attendanceData;
 
