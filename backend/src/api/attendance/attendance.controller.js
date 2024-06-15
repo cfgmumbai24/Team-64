@@ -93,3 +93,55 @@ export default () => {
   app.post('/:classno', updateAttendance);
   return app;
 };
+
+
+export const getAttendenceByclass = async (grade) => {
+  try {
+    const url = `http://localhost/api/attendance/grade/${grade}`; // Adjusted endpoint URL
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // Optionally, you can include Authorization header for authentication
+        // 'Authorization': `Bearer ${accessToken}`
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching attendance by grade:', error);
+    throw error;
+  }
+};
+
+
+export const getAttendanceByStudent = async (rollNo) => {
+  try {
+    const url = `http://localhost/api/attendance/student/${rollNo}`; // Adjusted endpoint URL
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // Optionally, you can include Authorization header for authentication
+        // 'Authorization': `Bearer ${accessToken}`
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching attendance by student:', error);
+    throw error;
+  }
+};
