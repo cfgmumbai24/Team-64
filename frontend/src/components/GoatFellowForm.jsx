@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const ContactForm = () => {
+
+const GoatFellowForm = ({ setFormData }) => {
+  const [formState, setFormState] = useState({
+    Milk: '',
+    Age: '',
+    Height: '',
+    Weight: '',
+    PregnancyStatus: 'No',
+    Behaviour: 'Docile',
+    Gender: 'Male',
+    Intake: ''
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState({
+      ...formState,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    //setFormData(formState);
+    navigate('/gramupadhaymanagement', {state: {formData: formState}});
+  };
+
   return (
     <div>
       <div className="container my-4" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -8,67 +37,50 @@ const ContactForm = () => {
       </div>
 
       <div className="container mx-auto mt-2">
-        <form action="/contact" method="POST" style={{ border: '1px dotted gray' }} className="px-5 py-5">
-          <div className="form-group">
-            <label htmlFor="Name">Milk In Litres</label>
-            <input type="number" className="form-control" id="Milk" name="Milk" placeholder="Enter Milk in Litres" />
-          </div>
-          <br />
+        <form onSubmit={handleSubmit} action='/gramupadhayanagement' style={{ border: '1px dotted gray' }} className="px-5 py-5">
+          {[
+            { label: 'Milk In Litres', name: 'Milk', type: 'number' },
+            { label: 'Age of Goat', name: 'Age', type: 'number' },
+            { label: 'Height (cm)', name: 'Height', type: 'number' },
+            { label: 'Weight (kg)', name: 'Weight', type: 'number' },
+            { label: 'HayGrass Intake (kg\'s)', name: 'Intake', type: 'number' }
+          ].map(({ label, name, type }) => (
+            <div className="form-group" key={name}>
+              <label htmlFor={name}>{label}</label>
+              <input
+                type={type}
+                className="form-control"
+                id={name}
+                name={name}
+                value={formState[name]}
+                onChange={handleChange}
+                placeholder={`Enter ${label}`}
+              />
+              <br />
+            </div>
+          ))}
 
-          <div className="form-group">
-            <label htmlFor="Name">Age of Goat</label>
-            <input type="number" className="form-control" id="Age" name="Age" placeholder="Enter Age" />
-          </div>
-          <br />
-
-          <div className="form-group">
-            <label htmlFor="Name">Height (cm)</label>
-            <input type="number" className="form-control" id="Height" name="Height" placeholder="Enter Height" />
-          </div>
-          <br />
-
-          <div className="form-group">
-            <label htmlFor="Name">Weight (kg)</label>
-            <input type="number" className="form-control" id="Weight" name="Weight" placeholder="Enter Weight" />
-          </div>
-          <br />
-
-          <div className="form-group">
-            <label htmlFor="exampleFormControlSelect2">Select Pregnancy Status</label>
-            <select className="form-control" id="PregnancyStatus" name="PregnancyStatus">
-              <option>No</option>
-              <option>Yes</option>
-            </select>
-          </div>
-          <br />
-
-          <div className="form-group">
-            <label htmlFor="exampleFormControlSelect2">Select Behaviour</label>
-            <select className="form-control" id="Behaviour" name="Behaviour">
-              <option>Docile</option>
-              <option>Normal</option>
-              <option>Aggressive</option>
-            </select>
-          </div>
-          <br />
-
-          <div className="form-group">
-            <label htmlFor="exampleFormControlSelect2">Select Gender</label>
-            <select className="form-control" id="Gender" name="Gender">
-              <option>Male</option>
-              <option>Female</option>
-            </select>
-          </div>
-          <br />
-
-          <div className="form-group">
-            <label htmlFor="Name">HayGrass Intake (kg's)</label>
-            <input type="number" className="form-control" id="Intake" name="Intake" placeholder="Enter HayGrass Intake" />
-          </div>
-          <br />
-
-          
-
+          {[
+            { label: 'Select Pregnancy Status', name: 'PregnancyStatus', options: ['No', 'Yes'] },
+            { label: 'Select Behaviour', name: 'Behaviour', options: ['Docile', 'Normal', 'Aggressive'] },
+            { label: 'Select Gender', name: 'Gender', options: ['Male', 'Female'] }
+          ].map(({ label, name, options }) => (
+            <div className="form-group" key={name}>
+              <label htmlFor={name}>{label}</label>
+              <select
+                className="form-control"
+                id={name}
+                name={name}
+                value={formState[name]}
+                onChange={handleChange}
+              >
+                {options.map(option => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+              <br />
+            </div>
+          ))}
 
           <button type="submit" className="btn btn-primary">Submit</button>
         </form>
@@ -77,4 +89,4 @@ const ContactForm = () => {
   );
 };
 
-export default ContactForm;
+export default GoatFellowForm;
