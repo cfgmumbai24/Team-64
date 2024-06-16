@@ -20,7 +20,7 @@ const Footer = () => {
         className="text-center text-white"
       >
         {/* <!-- Grid container --> */}
-        <div className="container p-4">
+        <div className="p-4">
           {/* <!-- Section WT project --> */}
           <h3 className="mx-auto mb-4">GRAM URJA</h3>
           {/* <!-- Section: Text --> */}
