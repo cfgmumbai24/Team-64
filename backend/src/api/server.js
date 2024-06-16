@@ -3,7 +3,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-import userRegister from './user/userRegister.js'; // Adjust the path as needed
+import userRegister from './user/userRegister.js'; 
+import Goat from './goat/Goat.js';
 
 const app = express();
 const port = 5050;
@@ -29,6 +30,39 @@ connectDB();
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+app.post('/register', async (req, res) => {
+  const { username, email, password, role } = req.body;
+
+  try {
+    const existingUser = await userRegister.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const newUser = new userRegister({ username, email, password, role });
+
+    await newUser.save();
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+app.post('/goat', async (req, res) => {
+  const { milkInLitres, age, height, weight, isPregnant, behaviour, gender, grassIntake } = req.body;
+
+  try {
+
+    const newGoat = new Goat({ milkInLitres, age, height, weight, isPregnant, behaviour, gender, grassIntake });
+    await newGoat.save();
+
+    res.status(201).json({ message: 'Goat registered successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
 });
 
 app.post('/login', async (req, res) => {
@@ -58,6 +92,8 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
