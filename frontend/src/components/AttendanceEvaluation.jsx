@@ -1,30 +1,79 @@
-import React from 'react';
-import {Link} from 'react-router-dom' ;
+import React from "react";
+import { Link } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 const AttendanceEvaluation = () => {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px' }}>
-      <div className="card" style={{ width: '18rem' }}>
-        <img src="/Attend.jpeg" className="card-img-top" alt="Attendance" height={250} />
-        <hr />
-        <div className="card-body">
-          <h5 className="card-title">Attendance</h5>
-          <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <Link to="/attendancetable" className="btn btn-primary">Mark Attendance</Link>
+    <div className="container-fluid">
+      <div className="row">
+        {/* Sidebar */}
+        <div className="col-md-3 p-0 fixed-top" style={{ height: "100vh" }}>
+          <Sidebar />
         </div>
-      </div>
 
-      <div className="card" style={{ width: '18rem' }}>
-        <img src="/eva.jpg" className="card-img-top" alt="Evaluation" height={250} />
-        <hr />
-        <div className="card-body">
-          <h5 className="card-title">Evaluation</h5>
-          <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <Link to="/evaluationtable" className="btn btn-primary">Evaluate Students</Link>
+        {/* Main Content Area */}
+        <div className="col-md-9 offset-md-3">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              padding: "20px",
+              marginTop: "125px",
+              flexWrap: "wrap",
+            }}
+          >
+            {/* Attendance Card */}
+            <div
+              className="card shadow"
+              style={{ width: "300px", padding: "10px" }}
+            >
+              <img
+                src="/attendanceLogo.png"
+                className="card-img-top"
+                alt="Attendance"
+                height={250}
+              />
+              <div className="card-body">
+                <h5 className="card-title">Attendance</h5>
+                <p className="card-text">Mark the student's attendance</p>
+                <Link
+                  to="/attendancetable"
+                  style={{ backgroundColor: "#526D82", color: "white" }}
+                  className="btn "
+                >
+                  Mark Attendance
+                </Link>
+              </div>
+            </div>
+
+            {/* Evaluation Card */}
+            <div
+              className="card shadow"
+              style={{ width: "300px", padding: "10px", marginRight: "50px" }}
+            >
+              <img
+                src="/evaluationLogo.png"
+                className="card-img-top"
+                alt="Evaluation"
+                height={250}
+              />
+              <div className="card-body">
+                <h5 className="card-title">Evaluation</h5>
+                <p className="card-text">Evaluate the student's progress</p>
+                <Link
+                  to="/evaluationtable"
+                  className="btn "
+                  style={{ backgroundColor: "#526D82", color: "white" }}
+                >
+                  Evaluate Students
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default AttendanceEvaluation;

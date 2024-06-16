@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,12 +23,12 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:5050/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email, password: password })
+        body: JSON.stringify({ email: email, password: password }),
       });
 
       if (response.ok) {
@@ -51,17 +51,20 @@ const Login = () => {
       return "goatfellowform";
     } else if (profile === 1) {
       return "classcards";
-    } else if(profile===2) {
+    } else if (profile === 2) {
       return "gramupadhaymanagement";
-    } else if(profile===3){
-      return "gramhunarmanagement" ;
+    } else if (profile === 3) {
+      return "gramhunarmanagement";
     }
   };
 
   return (
     <div className="container">
       <div className="row justify-content-center align-items-center vh-100">
-        <div className="col-md-1 text-center company__info" style={{ backgroundColor: "white" }}>
+        <div
+          className="col-md-1 text-center company__info"
+          style={{ backgroundColor: "white" }}
+        >
           <img
             src="/img/gramurja_logo.png"
             width="70"
@@ -136,6 +139,6 @@ const Login = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Login;
