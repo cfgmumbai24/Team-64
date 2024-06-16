@@ -4,9 +4,11 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import userRegister from './user/userRegister.js'; // Adjust the path as needed
+import pkg2 from '../config.js';
+const { databaseURL } = pkg2;
 
 const app = express();
-const port = 5050;
+const port = 3000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,7 +16,7 @@ app.use(cors());
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://saanviprashantkumar:helloworld@nexus.pgv6xzg.mongodb.net/gramhunar', {
+    await mongoose.connect(databaseURL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
