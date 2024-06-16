@@ -9,6 +9,8 @@ import AttendanceEvaluation from './components/AttendanceEvaluation';
 import AttendanceTable from './components/AttendanceTable';
 import GoatFellowForm from './components/GoatFellowForm'
 import EvaluationTable from './components/EvaluationTable';
+import GramUpadhayManagement from './components/GramUpadhayManagement';
+import GramHunarManagement from './components/GramHunarManagement';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +24,8 @@ const router = createBrowserRouter(
       <Route path='ae' key = {"4"} element={<AttendanceEvaluation />} />
       <Route path='attendancetable' key = {"3"} element={<AttendanceTable />} />
       <Route path='evaluationtable' key = {"3"} element={<EvaluationTable />} />
+      <Route path='gramupadhaymanagement' key = {"3"} element={<GramUpadhayManagement />} />
+      <Route path='gramhunarmanagement' key = {"3"} element={<GramHunarManagement />} />
       </>
  
   )
