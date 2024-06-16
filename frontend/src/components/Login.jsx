@@ -52,7 +52,7 @@ const Login = () => {
     } else if (profile === 1) {
       return "classcards";
     } else if(profile===2) {
-      return "gramupadhayanagement";
+      return "gramupadhaymanagement";
     } else if(profile===3){
       return "gramhunarmanagement" ;
     }

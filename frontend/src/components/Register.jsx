@@ -27,6 +27,8 @@ const Register = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    navigate('/login',);
+
 
     try {
       const response = await fetch('http://localhost:5050/register', {
