@@ -3,6 +3,9 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+
+import userRegister from './user/userRegister.js'; 
+
 import userRegister from './user/userRegister.js'; 
 import pkg2 from '../config.js';
 const { databaseURL } = pkg2;
@@ -94,5 +97,5 @@ app.post('/login', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(Example app listening on port ${port});
+  console.log(`Example app listening on port ${port}`);
 });
