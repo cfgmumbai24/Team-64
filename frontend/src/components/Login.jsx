@@ -20,32 +20,6 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email, password: password }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Login successful:", result);
-        navigate(`/${getProfileRoute(profile)}`); // Redirect to dashboard based on profile
-      } else {
-        const error = await response.json();
-        console.error("Error:", error.message);
-        alert("Login failed: " + error.message); // Show an error message
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An unexpected error occurred"); // Show an error message
-    }
-  };
-
   const getProfileRoute = (profile) => {
     if (profile === 0) {
       return "goatfellowform";
@@ -57,6 +31,7 @@ const Login = () => {
       return "gramhunarmanagement";
     }
   };
+  navigate(`/${getProfileRoute(profile)}`);
 
   return (
     <div className="container">
@@ -79,7 +54,7 @@ const Login = () => {
               <h2>Login</h2>
             </div>
             <div className="row my-4">
-              <form onSubmit={handleSubmit} className="form-group">
+              <form className="form-group">
                 <div className="row">
                   <input
                     type="email"
