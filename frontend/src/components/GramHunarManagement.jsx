@@ -3,7 +3,7 @@ import React from 'react'
 function GramHunarManagement() {
   return (
     <div>
-    <h1><Hemlo></Hemlo></h1>
+    <h1>Hemlo</h1>
     </div>
   )
 }

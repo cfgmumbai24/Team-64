@@ -11,6 +11,7 @@ import GoatFellowForm from './components/GoatFellowForm'
 import EvaluationTable from './components/EvaluationTable';
 import GramUpadhayManagement from './components/GramUpadhayManagement';
 import GramHunarManagement from './components/GramHunarManagement';
+import About from './components/About' ;
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path='evaluationtable' key = {"3"} element={<EvaluationTable />} />
       <Route path='gramupadhaymanagement' key = {"3"} element={<GramUpadhayManagement />} />
       <Route path='gramhunarmanagement' key = {"3"} element={<GramHunarManagement />} />
+      <Route path='about' key = {"3"} element={<About />} />
       </>
  
   )
