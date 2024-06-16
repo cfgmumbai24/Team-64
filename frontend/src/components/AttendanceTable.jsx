@@ -1,81 +1,151 @@
-import React, { useState } from 'react';
-
-const mockStudents = [
-  { roll_no: '1', name: 'John Doe' },
-  { roll_no: '2', name: 'Jane Smith' },
-  { roll_no: '3', name: 'Michael Brown' },
-  { roll_no: '4', name: 'Emily Davis' },
-  { roll_no: '5', name: 'David Wilson' },
-  { roll_no: '6', name: 'Sarah Johnson' },
-  { roll_no: '7', name: 'Chris Lee' },
-  { roll_no: '8', name: 'Amanda Martinez' },
-  { roll_no: '9', name: 'Jessica Garcia' },
-  { roll_no: '10', name: 'Daniel Rodriguez' },
-  { roll_no: '11', name: 'Laura Perez' },
-  { roll_no: '12', name: 'James White' },
-  { roll_no: '13', name: 'Linda Harris' },
-  { roll_no: '14', name: 'Brian Clark' },
-  { roll_no: '15', name: 'Elizabeth Lewis' },
-  { roll_no: '16', name: 'Matthew Walker' },
-  { roll_no: '17', name: 'Nancy Hall' },
-  { roll_no: '18', name: 'Kevin Young' },
-  { roll_no: '19', name: 'Angela Allen' },
-  { roll_no: '20', name: 'Patrick Scott' },
-];
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
 
 const AttendanceTable = () => {
-  const [attendance, setAttendance] = useState(
-    mockStudents.reduce((acc, student) => {
-      acc[student.roll_no] = false;
-      return acc;
-    }, {})
-  );
+  const [students, setStudents] = useState([]);
+  const [attendance, setAttendance] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const classNo = 6;
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(
+          `http://localhost:5050/api/students?classno=${classNo}`
+        );
+        if (response.ok) {
+          const studentsData = await response.json();
+          setStudents(studentsData.students);
+          setAttendance(
+            studentsData.students.reduce((acc, student) => {
+              acc[student.roll_no] = false; // Initialize attendance to false (absent)
+              return acc;
+            }, {})
+          );
+        } else {
+          setError("Failed to fetch students");
+        }
+      } catch (error) {
+        setError("Error fetching students");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [classNo]);
 
   const handleCheckboxChange = (roll_no) => {
     setAttendance((prevAttendance) => ({
       ...prevAttendance,
-      [roll_no]: !prevAttendance[roll_no],
+      [roll_no]: !prevAttendance[roll_no], // Toggle attendance status
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Submitted Attendance:', attendance);
-    // Add your logic to handle attendance submission
+
+    const attendanceData = {
+      date: new Date().toISOString(),
+      attendance: students.map((student) => ({
+        roll_no: student.roll_no,
+        present: attendance[student.roll_no],
+      })),
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:5050/api/attendance/${classNo}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(attendanceData),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        navigate("/classcards");
+      } else {
+        const errorData = await response.json();
+        console.error("Error updating attendance:", errorData);
+        throw new Error(errorData.message || "Failed to update attendance");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while updating attendance. Please try again.");
+    }
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h2 style={{ textAlign: 'center' }}>Student Attendance</h2>
-      <form onSubmit={handleSubmit}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-          <thead>
-            <tr>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>Roll No</th>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>Name</th>
-              <th style={{ border: '1px solid #ccc', padding: '8px' }}>Present</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockStudents.map((student) => (
-              <tr key={student.roll_no}>
-                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{student.roll_no}</td>
-                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{student.name}</td>
-                <td style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
-                  <input
-                    type="checkbox"
-                    checked={attendance[student.roll_no]}
-                    onChange={() => handleCheckboxChange(student.roll_no)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#4CAF50', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Submit Attendance
-        </button>
-      </form>
+    <div className="container-fluid">
+      <div className="row">
+        {/* Sidebar */}
+        <div className="col-md-3 p-0 fixed-top" style={{ height: "100vh" }}>
+          <Sidebar />
+        </div>
+
+        {/* Main Content Area */}
+        <div className="col-md-9 offset-md-3">
+          <div className="p-4">
+            <h2 className="text-center mb-4">Student Attendance</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="table-responsive">
+                <table className="table table-bordered">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th style={{ minWidth: "120px" }}>Roll No</th>
+                      <th>Name</th>
+                      <th style={{ minWidth: "100px" }}>Present</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {students.map((student) => (
+                      <tr key={student.roll_no}>
+                        <td>{student.roll_no}</td>
+                        <td>{student.name}</td>
+                        <td className="text-center">
+                          <input
+                            type="checkbox"
+                            checked={attendance[student.roll_no]}
+                            onChange={() =>
+                              handleCheckboxChange(student.roll_no)
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="text-center mt-4">
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  style={{
+                    backgroundColor: "#526D82",
+                    color: "white",
+                    width: "200px",
+                  }}
+                >
+                  Submit Attendance
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

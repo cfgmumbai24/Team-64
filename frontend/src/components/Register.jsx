@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -29,17 +29,24 @@ const Register = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/register', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5050/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: name,
           email,
           password,
-          role: profile === 0 ? 'goat-mitra' : profile === 1 ? 'fellow-member' : profile === 2 ? 'up-management' : 'hunar-management'
-        })
+          role:
+            profile === 0
+              ? "goat-mitra"
+              : profile === 1
+              ? "fellow-member"
+              : profile === 2
+              ? "up-management"
+              : "hunar-management",
+        }),
       });
 
       if (response.ok) {
@@ -47,18 +54,27 @@ const Register = () => {
         console.log(result);
         navigate("/success"); // Navigate to success page or home after successful registration
       } else {
-        throw new Error('Registration failed');
+        throw new Error("Registration failed");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   return (
     <div className="container">
       <div className="row justify-content-center align-items-center vh-100">
-        <div className="col-md-1 text-center company__info" style={{ backgroundColor: "white" }}>
-          <img src="/img/gramurja_logo.png" width="70" height="70" className="d-inline-block align-top mr-2" alt="GramUrja Logo" />
+        <div
+          className="col-md-1 text-center company__info"
+          style={{ backgroundColor: "white" }}
+        >
+          <img
+            src="/img/gramurja_logo.png"
+            width="70"
+            height="70"
+            className="d-inline-block align-top mr-2"
+            alt="GramUrja Logo"
+          />
         </div>
         <div className="col-md-8 col-xs-8 col-sm-8 my-4 login_form">
           <div className="container-fluid my-4">
@@ -132,6 +148,6 @@ const Register = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Register;
