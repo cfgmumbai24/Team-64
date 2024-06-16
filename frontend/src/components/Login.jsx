@@ -23,7 +23,7 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:5050/login", {
+      const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,9 @@ const Login = () => {
     } else if (profile === 1) {
       return "classcards";
     } else if (profile === 2) {
-      return "/";
+      return "gramupadhaymanagement";
+    } else if (profile === 3) {
+      return "gramhunarmanagement";
     }
   };
 

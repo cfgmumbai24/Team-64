@@ -8,7 +8,7 @@ import pkg2 from '../config.js';
 const { databaseURL } = pkg2;
 
 const app = express();
-const port = 3000;
+const port = 5050;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

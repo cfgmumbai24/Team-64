@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -27,6 +27,7 @@ const Register = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    navigate("/login");
 
     try {
       const response = await fetch("http://localhost:5050/register", {
@@ -142,6 +143,12 @@ const Register = () => {
                   />
                 </div>
               </form>
+
+              <div className="row my-3">
+                <p>
+                  Already have an account! <Link to="/login">Login</Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>
